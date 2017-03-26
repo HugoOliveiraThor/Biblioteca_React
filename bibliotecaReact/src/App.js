@@ -15,7 +15,6 @@ class App extends Component {
     }
 
     componentDidMount(){
-        console.log("didMount");
         $.ajax({
                 url:"http://localhost:8080/api/autores",
                 dataType: 'json',
@@ -36,8 +35,9 @@ class App extends Component {
             type:'post',
             data: JSON.stringify({nome:this.state.nome,email:this.state.email,senha:this.state.senha}),
             success: function(resposta){
+                this.setState({lista:resposta});
                 console.log("enviado com sucesso");
-            },
+            }.bind(this),
             error: function(resposta){
                 console.log("erro");
             }
@@ -59,9 +59,7 @@ class App extends Component {
   render() {
     return (
         <div id="layout">
-
             <a href="#menu" id="menuLink" className="menu-link">
-
                 <span></span>
             </a>
             <div id="menu">
@@ -74,14 +72,13 @@ class App extends Component {
                     </ul>
                 </div>
             </div>
-
             <div id="main">
                 <div className="header">
                     <h1>Cadastro de autores</h1>
                 </div>
                 <div className="content" id="content">
                     <div className="pure-form pure-form-aligned">
-                        <form className="pure-form pure-form-aligned" onSubmit={this.enviaForm.bind(this)} method="post">
+                        <form className="pure-form pure-form-aligned" onSubmit={this.enviaForm} method="post">
                             <div className="pure-control-group">
                                 <label htmlFor="nome">Nome</label>
                                 <input id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome}/>
@@ -99,7 +96,6 @@ class App extends Component {
                                 <button type="submit" className="pure-button pure-button-primary">Gravar</button>
                             </div>
                         </form>
-
                     </div>
                     <div>
                         <table className="pure-table">
@@ -113,7 +109,7 @@ class App extends Component {
                             {
                                 this.state.lista.map(function(autor){
                                     return (
-                                       <tr>
+                                       <tr key={autor.id}>
                                            <td>{autor.nome}</td>
                                            <td>{autor.email}</td>
                                        </tr>
