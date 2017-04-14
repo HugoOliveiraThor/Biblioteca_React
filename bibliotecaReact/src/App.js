@@ -26,6 +26,7 @@ class App extends Component {
                 </div>
                 <div className="content" id="content">
                     <AutorBox/>
+
                 </div>
             </div>
         </div>

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import  $ from 'jquery';
 import InputCustomizado from './components/InputCustomizado';
 import BotaoSubmitCustomizado from './components/BotaoSubmitCustomizado';
-import PubSub from 'pubsub-js'
+import PubSub from 'pubsub-js';
+import TratadorErros from './TratadorErros';
 
 
 
@@ -26,10 +27,17 @@ class FormularioAutor extends Component {
             data: JSON.stringify({nome:this.state.nome,email:this.state.email,senha:this.state.senha}),
             success: function(novaListagem){
                 PubSub.publish('atualiza-lista-autores',novaListagem);
-            },
+                this.setState({nome:'',email:'',senha:''});
+            }.bind(this),
             error: function(resposta){
+                if(resposta.status === 400){
+                    new TratadorErros().publicaErros(resposta.responseJSON);
+                }
                 console.log("erro");
-            }
+            },
+          beforeSend:function() {
+                PubSub.publish('limpa-erros',{});
+          }
         });
     }
 
